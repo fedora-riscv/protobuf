@@ -12,7 +12,7 @@
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
 Version:        2.3.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 License:        BSD
 Group:          Development/Libraries
 Source:         http://protobuf.googlecode.com/files/%{name}-%{version}.tar.bz2
@@ -133,16 +133,15 @@ Group:   Development/Languages
 BuildRequires:    java-devel >= 1.6
 BuildRequires:    jpackage-utils
 BuildRequires:    maven2
-BuildRequires:    maven2-plugin-compiler
-BuildRequires:    maven2-plugin-install
-BuildRequires:    maven2-plugin-jar
-BuildRequires:    maven2-plugin-javadoc
-#BuildRequires:    maven2-plugin-release
+BuildRequires:    maven-compiler-plugin
+BuildRequires:    maven-install-plugin
+BuildRequires:    maven-jar-plugin
+BuildRequires:    maven-javadoc-plugin
+BuildRequires:    maven-resources-plugin
+BuildRequires:    maven-surefire-plugin
+BuildRequires:    maven-antrun-plugin
 BuildRequires:    maven-doxia
 BuildRequires:    maven-doxia-sitetools
-BuildRequires:    maven2-plugin-resources
-BuildRequires:    maven2-plugin-surefire
-BuildRequires:    maven2-plugin-antrun
 Requires:         java
 Requires:         jpackage-utils
 Requires(post):   jpackage-utils
@@ -219,14 +218,14 @@ install -p -m 644 -D editors/proto.vim %{buildroot}%{_datadir}/vim/vimfiles/synt
 %if %{with java}
 pushd java
 install -d -m 755 %{buildroot}%{_javadir}
-install -pm 644 target/%{name}-java-%{version}.jar %{buildroot}%{_javadir}/%{name}-%{version}.jar
+install -pm 644 target/%{name}-java-%{version}.jar %{buildroot}%{_javadir}/%{name}.jar
 
 install -d -m 755 %{buildroot}%{_javadocdir}/%{name}
 cp -rp target/site/apidocs %{buildroot}%{_javadocdir}/%{name}
 
-install -d -m 755 %{buildroot}%{_datadir}/maven2/poms
-install -pm 644 pom.xml %{buildroot}%{_datadir}/maven2/poms/JPP-%{name}.pom
-%add_to_maven_depmap org.apache.maven %{name} %{version} JPP %{name}
+install -d -m 755 %{buildroot}%{_mavenpomdir}
+install -pm 644 pom.xml %{buildroot}%{_mavenpomdir}/JPP-%{name}.pom
+%add_to_maven_depmap com.google.protobuf %{name}-java %{version} JPP %{name}
 
 %endif
 
@@ -307,7 +306,7 @@ rm -rf %{buildroot}
 %if %{with java}
 %files java
 %defattr(-, root, root, -)
-%{_datadir}/maven2/poms/JPP-protobuf.pom
+%{_mavenpomdir}/JPP-protobuf.pom
 %{_mavendepmapfragdir}/protobuf
 %{_javadir}/*
 %doc examples/AddPerson.java examples/ListPeople.java
@@ -318,6 +317,11 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Thu Jan 13 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 2.3.0-6
+- Fix java subpackage bugs #669345 and #669346
+- Use new maven plugin names
+- Use mavenpomdir macro for pom installation
+
 * Mon Jul 26 2010 David Malcolm <dmalcolm@redhat.com> - 2.3.0-5
 - generalize hardcoded reference to 2.6 in python subpackage %%files manifest
 
