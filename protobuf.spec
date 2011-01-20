@@ -1,7 +1,14 @@
+
 # Build -python subpackage
 %bcond_without python
-# Build -java subpackage
+
+# Build -java subpackage (except on EL5)
+%if 0%{?el5} || 0%{?el6}
+%bcond_with java
+%else
 %bcond_without java
+%endif
+
 # Don't require gtest
 %bcond_with gtest
 
@@ -17,11 +24,17 @@ License:        BSD
 Group:          Development/Libraries
 Source:         http://protobuf.googlecode.com/files/%{name}-%{version}.tar.bz2
 Source1:        ftdetect-proto.vim
-Patch1:		protobuf-2.3.0-fedora-gtest.patch
-Patch2:		protobuf-java-fixes.patch
+Patch1:         protobuf-2.3.0-fedora-gtest.patch
+Patch2:         protobuf-java-fixes.patch
+Patch3:         protobuf-2.2.0-libtool.patch
 URL:            http://code.google.com/p/protobuf/
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires:  automake autoconf libtool pkgconfig 
+BuildRequires:  libtool pkgconfig 
+
+%if ! 0%{?el5}
+BuildRequires:  automake autoconf
+%endif
+
 %if %{with gtest}
 BuildRequires:  gtest-devel
 %endif
@@ -80,6 +93,7 @@ lacks descriptors, reflection, and some other features.
 
 %package lite-devel
 Summary: Protocol Buffers LITE_RUNTIME development libraries
+Group: Development/Libraries
 Requires: %{name}-devel = %{version}-%{release}
 Requires: %{name}-lite = %{version}-%{release}
 
@@ -109,9 +123,15 @@ lacks descriptors, reflection, and some other features.
 Summary: Python bindings for Google Protocol Buffers
 Group: Development/Languages
 BuildRequires: python-devel
-BuildRequires: python-setuptools-devel
 Conflicts: %{name}-compiler > %{version}
 Conflicts: %{name}-compiler < %{version}
+
+%if 0%{?el5}
+BuildRequires: python-setuptools
+%else
+BuildRequires: python-setuptools-devel
+%endif
+
 
 %description python
 This package contains Python libraries for Google Protocol Buffers
@@ -133,15 +153,16 @@ Group:   Development/Languages
 BuildRequires:    java-devel >= 1.6
 BuildRequires:    jpackage-utils
 BuildRequires:    maven2
-BuildRequires:    maven-compiler-plugin
-BuildRequires:    maven-install-plugin
-BuildRequires:    maven-jar-plugin
-BuildRequires:    maven-javadoc-plugin
-BuildRequires:    maven-resources-plugin
-BuildRequires:    maven-surefire-plugin
-BuildRequires:    maven-antrun-plugin
+BuildRequires:    maven2-plugin-compiler
+BuildRequires:    maven2-plugin-install
+BuildRequires:    maven2-plugin-jar
+BuildRequires:    maven2-plugin-javadoc
+#BuildRequires:    maven2-plugin-release
 BuildRequires:    maven-doxia
 BuildRequires:    maven-doxia-sitetools
+BuildRequires:    maven2-plugin-resources
+BuildRequires:    maven2-plugin-surefire
+BuildRequires:    maven2-plugin-antrun
 Requires:         java
 Requires:         jpackage-utils
 Requires(post):   jpackage-utils
@@ -174,12 +195,18 @@ chmod 644 examples/*
 %patch2 -p1
 rm -rf java/src/test
 %endif
+%patch3 -p1 -b .libtool
 
 %build
 iconv -f iso8859-1 -t utf-8 CONTRIBUTORS.txt > CONTRIBUTORS.txt.utf8
 mv CONTRIBUTORS.txt.utf8 CONTRIBUTORS.txt
 export PTHREAD_LIBS="-lpthread"
+
+# don't regen on el5 (cause we are patching configure)
+%if ! 0%{?el5}
 ./autogen.sh
+%endif
+
 %configure
 
 make %{?_smp_mflags}
@@ -218,14 +245,14 @@ install -p -m 644 -D editors/proto.vim %{buildroot}%{_datadir}/vim/vimfiles/synt
 %if %{with java}
 pushd java
 install -d -m 755 %{buildroot}%{_javadir}
-install -pm 644 target/%{name}-java-%{version}.jar %{buildroot}%{_javadir}/%{name}.jar
+install -pm 644 target/%{name}-java-%{version}.jar %{buildroot}%{_javadir}/%{name}-%{version}.jar
 
 install -d -m 755 %{buildroot}%{_javadocdir}/%{name}
 cp -rp target/site/apidocs %{buildroot}%{_javadocdir}/%{name}
 
-install -d -m 755 %{buildroot}%{_mavenpomdir}
-install -pm 644 pom.xml %{buildroot}%{_mavenpomdir}/JPP-%{name}.pom
-%add_to_maven_depmap com.google.protobuf %{name}-java %{version} JPP %{name}
+install -d -m 755 %{buildroot}%{_datadir}/maven2/poms
+install -pm 644 pom.xml %{buildroot}%{_datadir}/maven2/poms/JPP-%{name}.pom
+%add_to_maven_depmap org.apache.maven %{name} %{version} JPP %{name}
 
 %endif
 
@@ -306,7 +333,7 @@ rm -rf %{buildroot}
 %if %{with java}
 %files java
 %defattr(-, root, root, -)
-%{_mavenpomdir}/JPP-protobuf.pom
+%{_datadir}/maven2/poms/JPP-protobuf.pom
 %{_mavendepmapfragdir}/protobuf
 %{_javadir}/*
 %doc examples/AddPerson.java examples/ListPeople.java
@@ -317,10 +344,13 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
-* Thu Jan 13 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 2.3.0-6
-- Fix java subpackage bugs #669345 and #669346
-- Use new maven plugin names
-- Use mavenpomdir macro for pom installation
+* Tue Jan 18 2011 BJ Dierkes <wdierkes@rackspace.com> - 2.3.0-6
+- Add Group: Development/Libraries to -lite-devel package
+- BuildRequires: python-setuptools on EL5 (not python-setuptools-devel)
+- Don't build -java on EL5/EL6 (until maven2 is packaged into EPEL)
+- Add Patch3: protobuf-2.2.0-libtool.patch (on el5)
+- Don't BuildRequire automake, autoconf on el5
+- Don't run autogen.sh on EL5
 
 * Mon Jul 26 2010 David Malcolm <dmalcolm@redhat.com> - 2.3.0-5
 - generalize hardcoded reference to 2.6 in python subpackage %%files manifest
