@@ -19,7 +19,7 @@
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
 Version:        2.3.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 License:        BSD
 Group:          Development/Libraries
 Source:         http://protobuf.googlecode.com/files/%{name}-%{version}.tar.bz2
@@ -27,6 +27,7 @@ Source1:        ftdetect-proto.vim
 Patch1:         protobuf-2.3.0-fedora-gtest.patch
 Patch2:         protobuf-java-fixes.patch
 Patch3:         protobuf-2.2.0-libtool.patch
+Patch4:         protobuf-2.3.0-ez_setup.patch
 URL:            http://code.google.com/p/protobuf/
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:  libtool pkgconfig 
@@ -196,6 +197,7 @@ chmod 644 examples/*
 rm -rf java/src/test
 %endif
 %patch3 -p1 -b .libtool
+%patch4 -p1 -b .ez_setup
 
 %build
 iconv -f iso8859-1 -t utf-8 CONTRIBUTORS.txt > CONTRIBUTORS.txt.utf8
@@ -344,6 +346,10 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Thu Jan 20 2011 BJ Dierkes <wdierkes@rackspace.com> - 2.3.0-7
+- Added Patch4: protobuf-2.3.0-ez_setup.patch (don't use ez_setup
+  as it tries to download setuptools)
+
 * Tue Jan 18 2011 BJ Dierkes <wdierkes@rackspace.com> - 2.3.0-6
 - Add Group: Development/Libraries to -lite-devel package
 - BuildRequires: python-setuptools on EL5 (not python-setuptools-devel)
