@@ -12,7 +12,7 @@
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
 Version:        2.3.0
-Release:        7%{?dist}
+Release:        8%{?dist}
 License:        BSD
 Group:          Development/Libraries
 Source:         http://protobuf.googlecode.com/files/%{name}-%{version}.tar.bz2
@@ -21,7 +21,7 @@ Patch1:		protobuf-2.3.0-fedora-gtest.patch
 Patch2:		protobuf-java-fixes.patch
 URL:            http://code.google.com/p/protobuf/
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires:  automake autoconf libtool pkgconfig 
+BuildRequires:  automake autoconf libtool pkgconfig zlib-devel
 %if %{with gtest}
 BuildRequires:  gtest-devel
 %endif
@@ -317,6 +317,9 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Tue Sep 27 2011 Pierre-Yves Chibon <pingou@pingoured.fr> - 2.3.0-8
+- Adding zlib-devel as BR (rhbz: #732087)
+
 * Wed Feb 09 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.3.0-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
