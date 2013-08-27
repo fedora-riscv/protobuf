@@ -19,7 +19,7 @@
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
 Version:        2.3.0
-Release:        7%{?dist}
+Release:        8%{?dist}
 License:        BSD
 Group:          Development/Libraries
 Source:         http://protobuf.googlecode.com/files/%{name}-%{version}.tar.bz2
@@ -30,7 +30,7 @@ Patch3:         protobuf-2.2.0-libtool.patch
 Patch4:         protobuf-2.3.0-ez_setup.patch
 URL:            http://code.google.com/p/protobuf/
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires:  libtool pkgconfig 
+BuildRequires:  libtool pkgconfig zlib-devel
 
 %if ! 0%{?el5}
 BuildRequires:  automake autoconf
@@ -346,6 +346,9 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Tue Aug 27 2013 Ian Burrell <ianburrell@gmail.com> - 2.3.0-8
+- Adding zlib-devel as BR (rhbz: #815587)
+
 * Thu Jan 20 2011 BJ Dierkes <wdierkes@rackspace.com> - 2.3.0-7
 - Added Patch4: protobuf-2.3.0-ez_setup.patch (don't use ez_setup
   as it tries to download setuptools)
