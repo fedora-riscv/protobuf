@@ -5,10 +5,6 @@
 # Don't require gtest
 %bcond_with gtest
 
-%if %{with python}
-%define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")
-%endif
-
 %global emacs_version %(pkg-config emacs --modversion)
 %global emacs_lispdir %(pkg-config emacs --variable sitepkglispdir)
 %global emacs_startdir %(pkg-config emacs --variable sitestartdir)
@@ -16,19 +12,20 @@
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
 Version:        2.5.0
-Release:        11%{?dist}
+Release:        12%{?dist}
 License:        BSD
 Group:          Development/Libraries
 Source:         http://protobuf.googlecode.com/files/protobuf-%{version}.tar.bz2
 Source1:        ftdetect-proto.vim
 Source2:        protobuf-init.el
+Patch0:         protobuf-2.5.0-emacs-24.4.patch
 Patch1:         protobuf-2.5.0-fedora-gtest.patch
 Patch2:    	    protobuf-2.5.0-java-fixes.patch
 Patch3:         0001-Add-generic-GCC-support-for-atomic-operations.patch
 Patch4:         protobuf-2.5.0-makefile.patch
-URL:            http://code.google.com/p/protobuf/
+URL:            https://github.com/google/protobuf
 BuildRequires:  automake autoconf libtool pkgconfig zlib-devel
-BuildRequires:  emacs
+BuildRequires:  emacs(bin)
 BuildRequires:  emacs-el >= 24.1
 %if %{with gtest}
 BuildRequires:  gtest-devel
@@ -70,7 +67,7 @@ C++ headers and libraries
 %package static
 Summary: Static development files for %{name}
 Group: Development/Libraries
-Requires: %{name} = %{version}-%{release}
+Requires: %{name}-devel = %{version}-%{release}
 
 %description static
 Static libraries for Protocol Buffers
@@ -179,6 +176,7 @@ This package contains the API documentation for %{name}-java.
 
 %prep
 %setup -q
+%patch0 -p1 -b .emacs
 %if %{with gtest}
 rm -rf gtest
 %patch1 -p1 -b .gtest
@@ -256,18 +254,17 @@ install -p -m 0644 %{SOURCE2} $RPM_BUILD_ROOT%{emacs_startdir}
 %postun compiler -p /sbin/ldconfig
 
 %files
-%defattr(-, root, root, -)
 %{_libdir}/libprotobuf.so.*
-%doc CHANGES.txt CONTRIBUTORS.txt COPYING.txt README.txt
+%doc CHANGES.txt CONTRIBUTORS.txt README.txt
+%license COPYING.txt
 
 %files compiler
-%defattr(-, root, root, -)
 %{_bindir}/protoc
 %{_libdir}/libprotoc.so.*
-%doc COPYING.txt README.txt
+%doc README.txt
+%license COPYING.txt
 
 %files devel
-%defattr(-, root, root, -)
 %dir %{_includedir}/google
 %{_includedir}/google/protobuf/
 %{_libdir}/libprotobuf.so
@@ -276,26 +273,21 @@ install -p -m 0644 %{SOURCE2} $RPM_BUILD_ROOT%{emacs_startdir}
 %doc examples/add_person.cc examples/addressbook.proto examples/list_people.cc examples/Makefile examples/README.txt
 
 %files static
-%defattr(-, root, root, -)
 %{_libdir}/libprotobuf.a
 %{_libdir}/libprotoc.a
 
 %files lite
-%defattr(-, root, root, -)
 %{_libdir}/libprotobuf-lite.so.*
 
 %files lite-devel
-%defattr(-, root, root, -)
 %{_libdir}/libprotobuf-lite.so
 %{_libdir}/pkgconfig/protobuf-lite.pc
 
 %files lite-static
-%defattr(-, root, root, -)
 %{_libdir}/libprotobuf-lite.a
 
 %if %{with python}
 %files python
-%defattr(-, root, root, -)
 %dir %{python_sitelib}/google
 %{python_sitelib}/google/protobuf/
 %{python_sitelib}/protobuf-%{version}-py2.?.egg-info/
@@ -305,29 +297,30 @@ install -p -m 0644 %{SOURCE2} $RPM_BUILD_ROOT%{emacs_startdir}
 %endif
 
 %files vim
-%defattr(-, root, root, -)
 %{_datadir}/vim/vimfiles/ftdetect/proto.vim
 %{_datadir}/vim/vimfiles/syntax/proto.vim
 
 %files emacs
-%defattr(-,root,root,-)
 %{emacs_startdir}/protobuf-init.el
 %{emacs_lispdir}/protobuf-mode.elc
 
 %files emacs-el
-%defattr(-,root,root,-)
 %{emacs_lispdir}/protobuf-mode.el
 
 %if %{with java}
 %files java -f java/.mfiles
-%defattr(-, root, root, -)
 %doc examples/AddPerson.java examples/ListPeople.java
 
 %files javadoc -f java/.mfiles-javadoc
-%defattr(-, root, root, -)
 %endif
 
 %changelog
+* Tue May 19 2015 Orion Poplawski <orion@cora.nwra.com> - 2.5.0-12
+- New URL
+- Cleanup spec
+- Add patch to fix emacs compilation with emacs 24.4
+- Make -static require -devel (bug #1067475)
+
 * Sun Oct 19 2014 Conrad Meyer <cemeyer@uw.edu> - 2.5.0-11
 - protobuf-emacs requires emacs(bin), not emacs (rh# 1154456)
 
