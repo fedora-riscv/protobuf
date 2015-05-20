@@ -15,18 +15,20 @@
 
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
-Version:        2.6.0
-Release:        2%{?dist}
+Version:        2.5.0
+Release:        11%{?dist}
 License:        BSD
 Group:          Development/Libraries
 Source:         http://protobuf.googlecode.com/files/protobuf-%{version}.tar.bz2
 Source1:        ftdetect-proto.vim
 Source2:        protobuf-init.el
 Patch1:         protobuf-2.5.0-fedora-gtest.patch
-Patch2:    	    protobuf-2.6.0-java-fixes.patch
+Patch2:    	    protobuf-2.5.0-java-fixes.patch
+Patch3:         0001-Add-generic-GCC-support-for-atomic-operations.patch
+Patch4:         protobuf-2.5.0-makefile.patch
 URL:            http://code.google.com/p/protobuf/
 BuildRequires:  automake autoconf libtool pkgconfig zlib-devel
-BuildRequires:  emacs(bin)
+BuildRequires:  emacs
 BuildRequires:  emacs-el >= 24.1
 %if %{with gtest}
 BuildRequires:  gtest-devel
@@ -59,7 +61,6 @@ Summary: Protocol Buffers C++ headers and libraries
 Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-compiler = %{version}-%{release}
-Requires: zlib-devel
 Requires: pkgconfig
 
 %description devel
@@ -187,6 +188,9 @@ chmod 644 examples/*
 %patch2 -p1 -b .java-fixes
 rm -rf java/src/test
 %endif
+
+%patch3 -p1 -b .generic-atomics
+%patch4 -p1 -b .generic-atomics-makefile
 
 %build
 iconv -f iso8859-1 -t utf-8 CONTRIBUTORS.txt > CONTRIBUTORS.txt.utf8
@@ -324,16 +328,6 @@ install -p -m 0644 %{SOURCE2} $RPM_BUILD_ROOT%{emacs_startdir}
 %endif
 
 %changelog
-* Wed Dec 17 2014 Peter Lemenkov <lemenkov@gmail.com> - 2.6.0-2
-- Added missing Requires zlib-devel to protobuf-devel (see rhbz #1173343). See
-  also rhbz #732087.
-
-* Sun Oct 19 2014 Conrad Meyer <cemeyer@uw.edu> - 2.6.0-1
-- Bump to upstream release 2.6.0 (rh# 1154474).
-- Rebase 'java fixes' patch on 2.6.0 pom.xml.
-- Drop patch #3 (fall back to generic GCC atomics if no specialized atomics
-  exist, e.g. AArch64 GCC); this has been upstreamed.
-
 * Sun Oct 19 2014 Conrad Meyer <cemeyer@uw.edu> - 2.5.0-11
 - protobuf-emacs requires emacs(bin), not emacs (rh# 1154456)
 
