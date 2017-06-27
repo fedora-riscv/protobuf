@@ -12,7 +12,7 @@
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
 Version:        3.2.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 License:        BSD
 URL:            https://github.com/google/protobuf
 Source:         https://github.com/google/protobuf/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}.tar.gz
@@ -239,6 +239,9 @@ rm java/core/src/test/java/com/google/protobuf/ServiceTest.java
 %pom_remove_parent javanano
 %pom_remove_dep org.easymock:easymockclassextension javanano
 
+# Make OSGi dependency on sun.misc package optional
+%pom_xpath_inject "pom:configuration/pom:instructions" "<Import-Package>sun.misc;resolution:=optional,*</Import-Package>" java/core
+
 # Backward compatibility symlink
 %mvn_file :protobuf-java:jar: %{name}/%{name}-java %{name}
 
@@ -397,6 +400,10 @@ install -p -m 0644 %{SOURCE2} $RPM_BUILD_ROOT%{emacs_startdir}
 %endif
 
 %changelog
+* Tue Jun 27 2017 Mat Booth <mat.booth@redhat.com> - 3.2.0-4
+- Make OSGi dependency on sun.misc package optional. This package is not
+  available in all execution environments and will not be available in Java 9.
+
 * Mon May 15 2017 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.2.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_27_Mass_Rebuild
 
