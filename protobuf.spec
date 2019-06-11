@@ -1,5 +1,5 @@
 # Build -python subpackage
-%bcond_without python
+%bcond_with python
 # Build -java subpackage
 %bcond_without java
 
@@ -8,7 +8,7 @@
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
 Version:        3.6.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 License:        BSD
 URL:            https://github.com/protocolbuffers/protobuf
 Source:         https://github.com/protocolbuffers/protobuf/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}-all.tar.gz
@@ -163,6 +163,10 @@ BuildRequires:  mvn(org.easymock:easymock)
 Conflicts:      %{name}-compiler > %{version}
 Conflicts:      %{name}-compiler < %{version}
 Obsoletes:      %{name}-javanano < 3.6.0
+%ifarch %{arm}
+# Speed up builds on 32bit arm
+BuildRequires: java-1.8.0-openjdk-aarch32-devel
+%endif
 
 %description java
 This package contains Java Protocol Buffers runtime library.
@@ -212,10 +216,8 @@ rm java/core/src/test/java/com/google/protobuf/ServiceTest.java
 
 # This test is incredibly slow on arm
 # https://github.com/google/protobuf/issues/2389
-%ifarch %{arm}
 mv java/core/src/test/java/com/google/protobuf/IsValidUtf8Test.java \
    java/core/src/test/java/com/google/protobuf/IsValidUtf8Test.java.slow
-%endif
 %endif
 
 rm -f src/solaris/libstdc++.la
@@ -237,20 +239,14 @@ popd
 %endif
 
 %if %{with java}
+# Ensure we get the jit on arm
+%ifarch %{arm}
+export JAVA_HOME=$(ls -d %{_jvmdir}/java-1.8.0-openjdk-aarch32*)
+%endif
 %mvn_build -s -- -f java/pom.xml
 %endif
 
 %{_emacs_bytecompile} editors/protobuf-mode.el
-
-
-%check
-# Java tests fail on s390x
-%ifarch s390x
-fail=0
-%else
-fail=1
-%endif
-make %{?_smp_mflags} check || exit $fail
 
 
 %install
@@ -357,6 +353,10 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Tue Jun 11 2019 Mat Booth <mat.booth@redhat.com> - 3.6.1-5
+- Disable python support and long running check section
+- Ensure the JIT is used on arm
+
 * Wed May 8 2019 Orion Poplawski <orion@nwra.com> - 3.6.1-4
 - Update emacs packaging to comply with guidelines
 
