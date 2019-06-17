@@ -8,7 +8,7 @@
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
 Version:        3.6.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 License:        BSD
 URL:            https://github.com/protocolbuffers/protobuf
 Source:         https://github.com/protocolbuffers/protobuf/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}-all.tar.gz
@@ -243,7 +243,11 @@ popd
 %ifarch %{arm}
 export JAVA_HOME=$(ls -d %{_jvmdir}/java-1.8.0-openjdk-aarch32*)
 %endif
+%ifarch %{arm} s390x
+%mvn_build -f -s -- -f java/pom.xml
+%else
 %mvn_build -s -- -f java/pom.xml
+%endif
 %endif
 
 %{_emacs_bytecompile} editors/protobuf-mode.el
@@ -353,6 +357,9 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Mon Jun 17 2019 Mat Booth <mat.booth@redhat.com> - 3.6.1-6
+- Skip java tests on arm and s390x arches
+
 * Tue Jun 11 2019 Mat Booth <mat.booth@redhat.com> - 3.6.1-5
 - Disable python support and long running check section
 - Ensure the JIT is used on arm
