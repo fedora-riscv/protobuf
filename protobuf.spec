@@ -232,7 +232,12 @@ export PTHREAD_LIBS="-lpthread"
 ./autogen.sh
 %configure
 
-%make_build
+# -Wno-error=type-limits:
+#     https://bugzilla.redhat.com/show_bug.cgi?id=1838470
+#     https://github.com/protocolbuffers/protobuf/issues/7514
+#     https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95148
+#  (also set in %%check)
+%make_build CXXFLAGS="%{build_cxxflags} -Wno-error=type-limits"
 
 %if %{with python}
 pushd python
@@ -257,7 +262,7 @@ fail=0
 %else
 fail=1
 %endif
-make %{?_smp_mflags} check || exit $fail
+%make_build check CXXFLAGS="%{build_cxxflags} -Wno-error=type-limits" || exit $fail
 
 
 %install
