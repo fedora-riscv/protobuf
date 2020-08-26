@@ -7,8 +7,8 @@
 
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
-Version:        3.12.3
-Release:        4%{?dist}
+Version:        3.13.0
+Release:        1%{?dist}
 License:        BSD
 URL:            https://github.com/protocolbuffers/protobuf
 Source:         https://github.com/protocolbuffers/protobuf/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}-all.tar.gz
@@ -108,6 +108,7 @@ Summary:        Python 3 bindings for Google Protocol Buffers
 BuildArch:      noarch
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
+BuildRequires:  python%{python3_pkgversion}-wheel
 Requires:       python%{python3_pkgversion}-six >= 1.9
 Conflicts:      %{name}-compiler > %{version}
 Conflicts:      %{name}-compiler < %{version}
@@ -297,13 +298,13 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %files
 %doc CHANGES.txt CONTRIBUTORS.txt README.md
 %license LICENSE
-%{_libdir}/libprotobuf.so.23*
+%{_libdir}/libprotobuf.so.24*
 
 %files compiler
 %doc README.md
 %license LICENSE
 %{_bindir}/protoc
-%{_libdir}/libprotoc.so.23*
+%{_libdir}/libprotoc.so.24*
 %{_emacs_sitelispdir}/%{name}/
 %{_emacs_sitestartdir}/protobuf-init.el
 
@@ -320,7 +321,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %{_libdir}/libprotoc.a
 
 %files lite
-%{_libdir}/libprotobuf-lite.so.23*
+%{_libdir}/libprotobuf-lite.so.24*
 
 %files lite-devel
 %{_libdir}/libprotobuf-lite.so
@@ -366,6 +367,9 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Wed Aug 26 2020 Charalampos Stratakis <cstratak@redhat.com> - 3.13.0-1
+- Update to 3.13.0
+
 * Sat Aug 01 2020 Fedora Release Engineering <releng@fedoraproject.org> - 3.12.3-4
 - Second attempt - Rebuilt for
   https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
