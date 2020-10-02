@@ -7,8 +7,8 @@
 
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
-Version:        3.12.3
-Release:        4%{?dist}
+Version:        3.12.4
+Release:        1%{?dist}
 License:        BSD
 URL:            https://github.com/protocolbuffers/protobuf
 Source:         https://github.com/protocolbuffers/protobuf/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}-all.tar.gz
@@ -16,6 +16,9 @@ Source1:        ftdetect-proto.vim
 Source2:        protobuf-init.el
 # For tests (using exactly the same version as the release)
 Source3:        https://github.com/google/googletest/archive/5ec7f0c4a113e2f18ac2c6cc7df51ad6afc24081.zip
+
+# Backported from upstream
+Patch0:         0001-Temporarily-disabled-ExtensionRegistryFactoryTest.patch
 
 BuildRequires:  autoconf
 BuildRequires:  automake
@@ -366,6 +369,10 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Fri Oct 02 2020 Kalev Lember <klember@redhat.com> - 3.12.4-1
+- Update to 3.12.4
+- Disable failing ExtensionRegistryFactoryTest to fix FTBFS (#1881341)
+
 * Sat Aug 01 2020 Fedora Release Engineering <releng@fedoraproject.org> - 3.12.3-4
 - Second attempt - Rebuilt for
   https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
