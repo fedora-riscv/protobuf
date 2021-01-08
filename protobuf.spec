@@ -17,6 +17,7 @@ Source2:        protobuf-init.el
 # For tests (using exactly the same version as the release)
 Source3:        https://github.com/google/googletest/archive/5ec7f0c4a113e2f18ac2c6cc7df51ad6afc24081.zip
 
+BuildRequires: make
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  emacs
