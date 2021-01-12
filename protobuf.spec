@@ -17,6 +17,9 @@ Source2:        protobuf-init.el
 # For tests (using exactly the same version as the release)
 Source3:        https://github.com/google/googletest/archive/5ec7f0c4a113e2f18ac2c6cc7df51ad6afc24081.zip
 
+# https://github.com/protocolbuffers/protobuf/issues/8082
+Patch1:         protobuf-3.14-disable-IoTest.LargeOutput.patch
+
 BuildRequires:  make
 BuildRequires:  autoconf
 BuildRequires:  automake
@@ -190,7 +193,11 @@ Protocol Buffer BOM POM.
 
 %prep
 %setup -q -n %{name}-%{version}%{?rcver} -a 3
-%autopatch -p1
+%ifarch %{ix86} armv7hl
+# IoTest.LargeOutput fails on 32bit arches
+# https://github.com/protocolbuffers/protobuf/issues/8082
+%patch1 -p1
+%endif
 mv googletest-5ec7f0c4a113e2f18ac2c6cc7df51ad6afc24081/* third_party/googletest/
 find -name \*.cc -o -name \*.h | xargs chmod -x
 chmod 644 examples/*
