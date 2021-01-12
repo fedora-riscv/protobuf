@@ -7,7 +7,7 @@
 
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
-Version:        3.13.0
+Version:        3.14.0
 Release:        1%{?dist}
 License:        BSD
 URL:            https://github.com/protocolbuffers/protobuf
@@ -17,7 +17,7 @@ Source2:        protobuf-init.el
 # For tests (using exactly the same version as the release)
 Source3:        https://github.com/google/googletest/archive/5ec7f0c4a113e2f18ac2c6cc7df51ad6afc24081.zip
 
-BuildRequires: make
+BuildRequires:  make
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  emacs
@@ -206,6 +206,7 @@ rm java/core/src/test/java/com/google/protobuf/LiteralByteStringTest.java
 rm java/core/src/test/java/com/google/protobuf/BoundedByteStringTest.java
 rm java/core/src/test/java/com/google/protobuf/RopeByteStringTest.java
 rm java/core/src/test/java/com/google/protobuf/RopeByteStringSubstringTest.java
+rm java/core/src/test/java/com/google/protobuf/TextFormatTest.java
 rm -r java/util/src/test/java/com/google/protobuf/util
 rm -r java/util/src/main/java/com/google/protobuf/util
 
@@ -299,13 +300,13 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %files
 %doc CHANGES.txt CONTRIBUTORS.txt README.md
 %license LICENSE
-%{_libdir}/libprotobuf.so.24*
+%{_libdir}/libprotobuf.so.25*
 
 %files compiler
 %doc README.md
 %license LICENSE
 %{_bindir}/protoc
-%{_libdir}/libprotoc.so.24*
+%{_libdir}/libprotoc.so.25*
 %{_emacs_sitelispdir}/%{name}/
 %{_emacs_sitestartdir}/protobuf-init.el
 
@@ -322,7 +323,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %{_libdir}/libprotoc.a
 
 %files lite
-%{_libdir}/libprotobuf-lite.so.24*
+%{_libdir}/libprotobuf-lite.so.25*
 
 %files lite-devel
 %{_libdir}/libprotobuf-lite.so
@@ -368,6 +369,9 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Mon Jan 04 2021 Adrian Reber <adrian@lisas.de> - 3.14.0-1
+- Update to 3.14.0
+
 * Wed Aug 26 2020 Charalampos Stratakis <cstratak@redhat.com> - 3.13.0-1
 - Update to 3.13.0
 
