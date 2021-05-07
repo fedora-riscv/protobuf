@@ -8,7 +8,7 @@
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
 Version:        3.14.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 License:        BSD
 URL:            https://github.com/protocolbuffers/protobuf
 Source:         https://github.com/protocolbuffers/protobuf/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}-all.tar.gz
@@ -45,9 +45,6 @@ breaking deployed programs that are compiled against the "old" format.
 %package compiler
 Summary:        Protocol Buffers compiler
 Requires:       %{name} = %{version}-%{release}
-Obsoletes:      protobuf-emacs < 3.6.1-4
-Obsoletes:      protobuf-emacs-el < 3.6.1-4
-Requires:       emacs-filesystem >= %{_emacs_version}
 
 %description compiler
 This package contains Protocol Buffers compiler for all programming
@@ -191,6 +188,16 @@ Protocol Buffer BOM POM.
 
 %endif
 
+%package emacs
+Summary:        Emacs mode for Google Protocol Buffers descriptions
+BuildArch:      noarch
+Requires:       emacs-filesystem >= %{_emacs_version}
+Obsoletes:      protobuf-emacs-el < 3.6.1-4
+
+%description emacs
+This package contains syntax highlighting for Google Protocol Buffers
+descriptions in the Emacs editor.
+
 %prep
 %setup -q -n %{name}-%{version}%{?rcver} -a 3
 %ifarch %{ix86} armv7hl
@@ -281,7 +288,6 @@ find %{buildroot} -type f -name "*.la" -exec rm -f {} \;
 
 %if %{with python}
 pushd python
-#python ./setup.py install --root=%{buildroot} --single-version-externally-managed --record=INSTALLED_FILES --optimize=1
 %py3_install
 find %{buildroot}%{python3_sitelib} -name \*.py |
   xargs sed -i -e '1{\@^#!@d}'
@@ -314,8 +320,6 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %license LICENSE
 %{_bindir}/protoc
 %{_libdir}/libprotoc.so.25*
-%{_emacs_sitelispdir}/%{name}/
-%{_emacs_sitestartdir}/protobuf-init.el
 
 %files devel
 %dir %{_includedir}/google
@@ -324,6 +328,10 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %{_libdir}/libprotoc.so
 %{_libdir}/pkgconfig/protobuf.pc
 %doc examples/add_person.cc examples/addressbook.proto examples/list_people.cc examples/Makefile examples/README.md
+
+%files emacs
+%{_emacs_sitelispdir}/%{name}/
+%{_emacs_sitestartdir}/protobuf-init.el
 
 %files static
 %{_libdir}/libprotobuf.a
@@ -376,6 +384,10 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Thu May 06 2021 Adrian Reber <adrian@lisas.de> - 3.14.0-4
+- Reintroduce the emacs subpackage to avoid file conflicts between
+  protobuf-compiler.x86_64 and protobuf-compiler.i686
+
 * Tue Mar 30 2021 Jonathan Wakely <jwakely@redhat.com> - 3.14.0-3
 - Rebuilt for removed libstdc++ symbol (#1937698)
 
