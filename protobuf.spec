@@ -8,7 +8,7 @@
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
 Version:        3.14.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 License:        BSD
 URL:            https://github.com/protocolbuffers/protobuf
 Source:         https://github.com/protocolbuffers/protobuf/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}-all.tar.gz
@@ -384,6 +384,9 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Fri Jun 04 2021 Python Maint <python-maint@redhat.com> - 3.14.0-5
+- Rebuilt for Python 3.10
+
 * Thu May 06 2021 Adrian Reber <adrian@lisas.de> - 3.14.0-4
 - Reintroduce the emacs subpackage to avoid file conflicts between
   protobuf-compiler.x86_64 and protobuf-compiler.i686
