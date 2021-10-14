@@ -1,14 +1,14 @@
 # Build -python subpackage
 %bcond_without python
 # Build -java subpackage
-%bcond_without java
+%bcond_with java
 
 #global rcver rc2
 
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
-Version:        3.14.0
-Release:        6%{?dist}
+Version:        3.18.1
+Release:        1%{?dist}
 License:        BSD
 URL:            https://github.com/protocolbuffers/protobuf
 Source:         https://github.com/protocolbuffers/protobuf/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}-all.tar.gz
@@ -266,6 +266,8 @@ popd
 %ifarch s390x %{arm}
 export MAVEN_OPTS=-Xmx1024m
 %endif
+%pom_disable_module kotlin java/pom.xml
+%pom_disable_module kotlin-lite java/pom.xml
 %mvn_build -s -- -f java/pom.xml
 %endif
 
@@ -313,13 +315,13 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %files
 %doc CHANGES.txt CONTRIBUTORS.txt README.md
 %license LICENSE
-%{_libdir}/libprotobuf.so.25*
+%{_libdir}/libprotobuf.so.29*
 
 %files compiler
 %doc README.md
 %license LICENSE
 %{_bindir}/protoc
-%{_libdir}/libprotoc.so.25*
+%{_libdir}/libprotoc.so.29*
 
 %files devel
 %dir %{_includedir}/google
@@ -338,7 +340,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %{_libdir}/libprotoc.a
 
 %files lite
-%{_libdir}/libprotobuf-lite.so.25*
+%{_libdir}/libprotobuf-lite.so.29*
 
 %files lite-devel
 %{_libdir}/libprotobuf-lite.so
@@ -384,6 +386,9 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Thu Oct 14 2021 Orion Poplawski <orion@nwra.com> - 3.18.1-1
+- Update to 3.18.1
+
 * Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 3.14.0-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 
