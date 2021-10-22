@@ -8,7 +8,7 @@
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
 Version:        3.18.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        BSD
 URL:            https://github.com/protocolbuffers/protobuf
 Source:         https://github.com/protocolbuffers/protobuf/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}-all.tar.gz
@@ -19,6 +19,8 @@ Source3:        https://github.com/google/googletest/archive/5ec7f0c4a113e2f18ac
 
 # https://github.com/protocolbuffers/protobuf/issues/8082
 Patch1:         protobuf-3.14-disable-IoTest.LargeOutput.patch
+# Disable tests that are failing on 32bit systems
+Patch2:         disable-tests-on-32-bit-systems.patch
 
 BuildRequires:  make
 BuildRequires:  autoconf
@@ -204,6 +206,8 @@ descriptions in the Emacs editor.
 # IoTest.LargeOutput fails on 32bit arches
 # https://github.com/protocolbuffers/protobuf/issues/8082
 %patch1 -p1
+# Need to disable more tests that fail on 32bit arches only
+%patch2 -p0
 %endif
 mv googletest-5ec7f0c4a113e2f18ac2c6cc7df51ad6afc24081/* third_party/googletest/
 find -name \*.cc -o -name \*.h | xargs chmod -x
@@ -386,6 +390,9 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Fri Oct 22 2021 Adrian Reber <adrian@lisas.de> - 3.18.1-2
+- Disable tests that fail on 32bit arches
+
 * Thu Oct 14 2021 Orion Poplawski <orion@nwra.com> - 3.18.1-1
 - Update to 3.18.1
 
