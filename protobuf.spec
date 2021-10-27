@@ -7,8 +7,8 @@
 
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
-Version:        3.18.1
-Release:        2%{?dist}
+Version:        3.19.0
+Release:        1%{?dist}
 License:        BSD
 URL:            https://github.com/protocolbuffers/protobuf
 Source:         https://github.com/protocolbuffers/protobuf/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}-all.tar.gz
@@ -319,13 +319,13 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %files
 %doc CHANGES.txt CONTRIBUTORS.txt README.md
 %license LICENSE
-%{_libdir}/libprotobuf.so.29*
+%{_libdir}/libprotobuf.so.30*
 
 %files compiler
 %doc README.md
 %license LICENSE
 %{_bindir}/protoc
-%{_libdir}/libprotoc.so.29*
+%{_libdir}/libprotoc.so.30*
 
 %files devel
 %dir %{_includedir}/google
@@ -344,7 +344,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %{_libdir}/libprotoc.a
 
 %files lite
-%{_libdir}/libprotobuf-lite.so.29*
+%{_libdir}/libprotobuf-lite.so.30*
 
 %files lite-devel
 %{_libdir}/libprotobuf-lite.so
@@ -390,6 +390,9 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Wed Oct 27 2021 Major Hayden <major@mhtx.net> - 3.19.0-1
+- Update to 3.19.1
+
 * Fri Oct 22 2021 Adrian Reber <adrian@lisas.de> - 3.18.1-2
 - Disable tests that fail on 32bit arches
 
