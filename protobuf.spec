@@ -1,14 +1,14 @@
 # Build -python subpackage
 %bcond_without python
 # Build -java subpackage
-%bcond_with java
+%bcond_without java
 
 #global rcver rc2
 
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
 Version:        3.19.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        BSD
 URL:            https://github.com/protocolbuffers/protobuf
 Source:         https://github.com/protocolbuffers/protobuf/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}-all.tar.gz
@@ -139,6 +139,8 @@ BuildArch:      noarch
 BuildRequires:  maven-local
 BuildRequires:  mvn(com.google.code.gson:gson)
 BuildRequires:  mvn(com.google.guava:guava)
+BuildRequires:  mvn(com.google.guava:guava-testlib)
+BuildRequires:  mvn(com.google.truth:truth)
 BuildRequires:  mvn(junit:junit)
 BuildRequires:  mvn(org.apache.felix:maven-bundle-plugin)
 BuildRequires:  mvn(org.apache.maven.plugins:maven-antrun-plugin)
@@ -213,20 +215,18 @@ mv googletest-5ec7f0c4a113e2f18ac2c6cc7df51ad6afc24081/* third_party/googletest/
 find -name \*.cc -o -name \*.h | xargs chmod -x
 chmod 644 examples/*
 %if %{with java}
-%pom_remove_dep org.easymock:easymockclassextension java/pom.xml java/core/pom.xml java/lite/pom.xml java/util/pom.xml
-%pom_remove_dep com.google.truth:truth java/pom.xml java/core/pom.xml java/lite/pom.xml java/util/pom.xml
 %pom_remove_dep com.google.errorprone:error_prone_annotations java/util/pom.xml
-%pom_remove_dep com.google.guava:guava-testlib java/pom.xml java/util/pom.xml
-# These use easymockclassextension
-rm java/core/src/test/java/com/google/protobuf/ServiceTest.java
-# These use truth or error_prone_annotations or guava-testlib
-rm java/core/src/test/java/com/google/protobuf/LiteralByteStringTest.java
-rm java/core/src/test/java/com/google/protobuf/BoundedByteStringTest.java
-rm java/core/src/test/java/com/google/protobuf/RopeByteStringTest.java
-rm java/core/src/test/java/com/google/protobuf/RopeByteStringSubstringTest.java
-rm java/core/src/test/java/com/google/protobuf/TextFormatTest.java
-rm -r java/util/src/test/java/com/google/protobuf/util
-rm -r java/util/src/main/java/com/google/protobuf/util
+%pom_remove_dep com.google.j2objc:j2objc-annotations java/util/pom.xml
+
+# Remove annotation libraries we don't have
+annotations=$(
+    find -name '*.java' |
+      xargs grep -h -e '^import com\.google\.errorprone\.annotation' \
+                    -e '^import com\.google\.j2objc\.annotations' |
+      sort -u | sed 's/.*\.\([^.]*\);/\1/' | paste -sd\|
+)
+find -name '*.java' | xargs sed -ri \
+    "s/^import .*\.($annotations);//;s/@($annotations)"'\>\s*(\((("[^"]*")|([^)]*))\))?//g'
 
 # Make OSGi dependency on sun.misc package optional
 %pom_xpath_inject "pom:configuration/pom:instructions" "<Import-Package>sun.misc;resolution:=optional,*</Import-Package>" java/core
@@ -390,6 +390,9 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Wed Nov 10 2021 Orion Poplawski <orion@nwra.com> - 3.19.0-2
+- Re-enable java
+
 * Wed Oct 27 2021 Major Hayden <major@mhtx.net> - 3.19.0-1
 - Update to 3.19.1
 
