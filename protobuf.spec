@@ -1,7 +1,7 @@
 # Build -python subpackage
 %bcond_without python
 # Build -java subpackage
-%bcond_without java
+%bcond_with java
 
 #global rcver rc2
 
@@ -139,8 +139,6 @@ BuildArch:      noarch
 BuildRequires:  maven-local
 BuildRequires:  mvn(com.google.code.gson:gson)
 BuildRequires:  mvn(com.google.guava:guava)
-BuildRequires:  mvn(com.google.guava:guava-testlib)
-BuildRequires:  mvn(com.google.truth:truth)
 BuildRequires:  mvn(junit:junit)
 BuildRequires:  mvn(org.apache.felix:maven-bundle-plugin)
 BuildRequires:  mvn(org.apache.maven.plugins:maven-antrun-plugin)
@@ -216,18 +214,19 @@ find -name \*.cc -o -name \*.h | xargs chmod -x
 chmod 644 examples/*
 %if %{with java}
 %pom_remove_dep org.easymock:easymockclassextension java/pom.xml java/core/pom.xml java/lite/pom.xml java/util/pom.xml
+%pom_remove_dep com.google.truth:truth java/pom.xml java/core/pom.xml java/lite/pom.xml java/util/pom.xml
 %pom_remove_dep com.google.errorprone:error_prone_annotations java/util/pom.xml
+%pom_remove_dep com.google.guava:guava-testlib java/pom.xml java/util/pom.xml
 # These use easymockclassextension
 rm java/core/src/test/java/com/google/protobuf/ServiceTest.java
-
-# Remove annotation libraries we don't have
-annotations=$(
-    find -name '*.java' |
-      xargs grep -h -e '^import com\.google\.errorprone\.annotation' |
-      sort -u | sed 's/.*\.\([^.]*\);/\1/' | paste -sd\|
-)
-find -name '*.java' | xargs sed -ri \
-    "s/^import .*\.($annotations);//;s/@($annotations)"'\>\s*(\((("[^"]*")|([^)]*))\))?//g'
+# These use truth or error_prone_annotations or guava-testlib
+rm java/core/src/test/java/com/google/protobuf/LiteralByteStringTest.java
+rm java/core/src/test/java/com/google/protobuf/BoundedByteStringTest.java
+rm java/core/src/test/java/com/google/protobuf/RopeByteStringTest.java
+rm java/core/src/test/java/com/google/protobuf/RopeByteStringSubstringTest.java
+rm java/core/src/test/java/com/google/protobuf/TextFormatTest.java
+rm -r java/util/src/test/java/com/google/protobuf/util
+rm -r java/util/src/main/java/com/google/protobuf/util
 
 # Make OSGi dependency on sun.misc package optional
 %pom_xpath_inject "pom:configuration/pom:instructions" "<Import-Package>sun.misc;resolution:=optional,*</Import-Package>" java/core
