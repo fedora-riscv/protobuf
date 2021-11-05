@@ -215,14 +215,15 @@ mv googletest-5ec7f0c4a113e2f18ac2c6cc7df51ad6afc24081/* third_party/googletest/
 find -name \*.cc -o -name \*.h | xargs chmod -x
 chmod 644 examples/*
 %if %{with java}
+%pom_remove_dep org.easymock:easymockclassextension java/pom.xml java/core/pom.xml java/lite/pom.xml java/util/pom.xml
 %pom_remove_dep com.google.errorprone:error_prone_annotations java/util/pom.xml
-%pom_remove_dep com.google.j2objc:j2objc-annotations java/util/pom.xml
+# These use easymockclassextension
+rm java/core/src/test/java/com/google/protobuf/ServiceTest.java
 
 # Remove annotation libraries we don't have
 annotations=$(
     find -name '*.java' |
-      xargs grep -h -e '^import com\.google\.errorprone\.annotation' \
-                    -e '^import com\.google\.j2objc\.annotations' |
+      xargs grep -h -e '^import com\.google\.errorprone\.annotation' |
       sort -u | sed 's/.*\.\([^.]*\);/\1/' | paste -sd\|
 )
 find -name '*.java' | xargs sed -ri \
