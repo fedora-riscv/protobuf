@@ -7,8 +7,8 @@
 
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
-Version:        3.19.0
-Release:        4%{?dist}
+Version:        3.19.4
+Release:        1%{?dist}
 License:        BSD
 URL:            https://github.com/protocolbuffers/protobuf
 Source:         https://github.com/protocolbuffers/protobuf/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}-all.tar.gz
@@ -390,6 +390,9 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Mon Feb 07 2022 Orion Poplawski <orion@nwra.com> - 3.19.4-1
+- Update to 3.19.4
+
 * Sat Feb 05 2022 Jiri Vanek <jvanek@redhat.com> - 3.19.0-4
 - Rebuilt for java-17-openjdk as system jdk
 
