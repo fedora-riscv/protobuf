@@ -7,8 +7,8 @@
 
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
-Version:        3.14.0
-Release:        6%{?dist}
+Version:        3.15.0
+Release:        1%{?dist}
 License:        BSD
 URL:            https://github.com/protocolbuffers/protobuf
 Source:         https://github.com/protocolbuffers/protobuf/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}-all.tar.gz
@@ -313,13 +313,13 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %files
 %doc CHANGES.txt CONTRIBUTORS.txt README.md
 %license LICENSE
-%{_libdir}/libprotobuf.so.25*
+%{_libdir}/libprotobuf.so.26*
 
 %files compiler
 %doc README.md
 %license LICENSE
 %{_bindir}/protoc
-%{_libdir}/libprotoc.so.25*
+%{_libdir}/libprotoc.so.26*
 
 %files devel
 %dir %{_includedir}/google
@@ -338,7 +338,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %{_libdir}/libprotoc.a
 
 %files lite
-%{_libdir}/libprotobuf-lite.so.25*
+%{_libdir}/libprotobuf-lite.so.26*
 
 %files lite-devel
 %{_libdir}/libprotobuf-lite.so
@@ -384,6 +384,10 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Fri Feb 11 2022 Paul Wouters <paul.wouters@aiven.io> - 3.15.0-1
+- Update to 3.15.0 for CVE-2021-22570
+- Resolves: rhbz#2050492 CVE-2021-22570 protobuf: Incorrect parsing of nullchar in the proto symbol
+
 * Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 3.14.0-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 
