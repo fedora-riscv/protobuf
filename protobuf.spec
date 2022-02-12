@@ -8,7 +8,7 @@
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
 Version:        3.14.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 License:        BSD
 URL:            https://github.com/protocolbuffers/protobuf
 Source:         https://github.com/protocolbuffers/protobuf/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}-all.tar.gz
@@ -19,6 +19,12 @@ Source3:        https://github.com/google/googletest/archive/5ec7f0c4a113e2f18ac
 
 # https://github.com/protocolbuffers/protobuf/issues/8082
 Patch1:         protobuf-3.14-disable-IoTest.LargeOutput.patch
+
+# Fix for CVE-2021-22570 "protobuf: Incorrect parsing of nullchar in the proto symbol leads to Nullptr dereference"
+# https://bugzilla.redhat.com/show_bug.cgi?id=2050492
+# Based on https://github.com/protocolbuffers/protobuf/commit/af95001202a035d78ff997e737bd67fca22ab32a
+# As described in https://bugzilla.suse.com/show_bug.cgi?id=1195258
+Patch2:         CVE-2021-22570.patch
 
 BuildRequires:  make
 BuildRequires:  autoconf
@@ -205,6 +211,7 @@ descriptions in the Emacs editor.
 # https://github.com/protocolbuffers/protobuf/issues/8082
 %patch1 -p1
 %endif
+%patch2 -p1
 mv googletest-5ec7f0c4a113e2f18ac2c6cc7df51ad6afc24081/* third_party/googletest/
 find -name \*.cc -o -name \*.h | xargs chmod -x
 chmod 644 examples/*
@@ -384,6 +391,9 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Sat Feb 12 2022 Adrian Reber <adrian@lisas.de> - 3.14.0-7
+- Applied patch for for CVE-2021-22570 (#2050492)
+
 * Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 3.14.0-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 
