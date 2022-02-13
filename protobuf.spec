@@ -8,7 +8,7 @@
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
 Version:        3.19.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        BSD
 URL:            https://github.com/protocolbuffers/protobuf
 Source:         https://github.com/protocolbuffers/protobuf/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}-all.tar.gz
@@ -21,6 +21,11 @@ Source3:        https://github.com/google/googletest/archive/5ec7f0c4a113e2f18ac
 Patch1:         protobuf-3.14-disable-IoTest.LargeOutput.patch
 # Disable tests that are failing on 32bit systems
 Patch2:         disable-tests-on-32-bit-systems.patch
+# https://bugzilla.redhat.com/show_bug.cgi?id=2051202
+# java.lang.ClassLoader.defineClass(java.lang.String,byte[],int,int,java.security.ProtectionDomain)
+# throws java.lang.ClassFormatError accessible: module java.base does not "opens java.lang" to unnamed module @12d5624a
+#	at com.google.protobuf.ServiceTest.testGetPrototype(ServiceTest.java:107)
+Patch3:         protobuf-3.19.4-jre17-add-opens.patch
 
 BuildRequires:  make
 BuildRequires:  autoconf
@@ -211,6 +216,7 @@ descriptions in the Emacs editor.
 # Need to disable more tests that fail on 32bit arches only
 %patch2 -p0
 %endif
+%patch3 -p1 -b .jre17
 mv googletest-5ec7f0c4a113e2f18ac2c6cc7df51ad6afc24081/* third_party/googletest/
 find -name \*.cc -o -name \*.h | xargs chmod -x
 chmod 644 examples/*
@@ -267,7 +273,7 @@ popd
 %endif
 
 %if %{with java}
-%ifarch s390x %{arm}
+%ifarch %ix86 s390x %{arm}
 export MAVEN_OPTS=-Xmx1024m
 %endif
 %pom_disable_module kotlin java/pom.xml
@@ -390,6 +396,10 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Sun Feb 13 2022 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.19.4-2
+- Add some --add-opens option for java17
+- Restrict heap usage for mvn also on %%ix86
+
 * Mon Feb 07 2022 Orion Poplawski <orion@nwra.com> - 3.19.4-1
 - Update to 3.19.4
 
