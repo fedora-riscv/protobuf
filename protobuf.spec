@@ -8,7 +8,7 @@
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
 Version:        3.19.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 License:        BSD
 URL:            https://github.com/protocolbuffers/protobuf
 Source:         https://github.com/protocolbuffers/protobuf/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}-all.tar.gz
@@ -396,6 +396,9 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Mon Jun 13 2022 Python Maint <python-maint@redhat.com> - 3.19.4-3
+- Rebuilt for Python 3.11
+
 * Sun Feb 13 2022 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.19.4-2
 - Add some --add-opens option for java17
 - Restrict heap usage for mvn also on %%ix86
