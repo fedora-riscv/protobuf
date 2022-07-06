@@ -40,6 +40,14 @@ BuildRequires:  libtool
 BuildRequires:  pkgconfig
 BuildRequires:  zlib-devel
 
+%ifnarch %{java_arches}
+Obsoletes:      %{name}-java-util < 3.19.4-4
+Obsoletes:      %{name}-javadoc < 3.19.4-4
+Obsoletes:      %{name}-parent < 3.19.4-4
+Obsoletes:      %{name}-bom < 3.19.4-4
+Obsoletes:      %{name}-javalite < 3.19.4-4
+%endif
+
 %description
 Protocol Buffers are a way of encoding structured data in an efficient
 yet extensible format. Google uses Protocol Buffers for almost all of
@@ -402,6 +410,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %changelog
 * Wed Jul 06 2022 Benjamin A. Beasley <code@musicinmybrain.net> - 3.19.4-4
 - Exclude java subpackages on non-java arches (fix RHBZ#2104092)
+- Obsolete java subpackages on non-java arches
 
 * Mon Jun 13 2022 Python Maint <python-maint@redhat.com> - 3.19.4-3
 - Rebuilt for Python 3.11
