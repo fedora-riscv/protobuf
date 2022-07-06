@@ -1,14 +1,18 @@
 # Build -python subpackage
 %bcond_without python
 # Build -java subpackage
+%ifarch %{java_arches}
 %bcond_without java
+%else
+%bcond_with java
+%endif
 
 #global rcver rc2
 
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
 Version:        3.19.4
-Release:        3%{?dist}
+Release:        4%{?dist}
 License:        BSD
 URL:            https://github.com/protocolbuffers/protobuf
 Source:         https://github.com/protocolbuffers/protobuf/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}-all.tar.gz
@@ -396,6 +400,9 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Wed Jul 06 2022 Benjamin A. Beasley <code@musicinmybrain.net> - 3.19.4-4
+- Exclude java subpackages on non-java arches (fix RHBZ#2104092)
+
 * Mon Jun 13 2022 Python Maint <python-maint@redhat.com> - 3.19.4-3
 - Rebuilt for Python 3.11
 
