@@ -1,5 +1,12 @@
 # Build -python subpackage
 %bcond_without python
+# Build -python subpackage with C++
+# Not compatible with Python 3.11
+%if 0%{?fedora} >= 37
+%bcond_with python_cpp
+%else
+%bcond_without python_cpp
+%endif
 # Build -java subpackage
 %ifarch %{java_arches}
 %bcond_without java
@@ -12,7 +19,7 @@
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
 Version:        3.19.4
-Release:        5%{?dist}
+Release:        6%{?dist}
 License:        BSD
 URL:            https://github.com/protocolbuffers/protobuf
 Source:         https://github.com/protocolbuffers/protobuf/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}-all.tar.gz
@@ -125,11 +132,15 @@ lacks descriptors, reflection, and some other features.
 %if %{with python}
 %package -n python%{python3_pkgversion}-%{name}
 Summary:        Python 3 bindings for Google Protocol Buffers
-BuildArch:      noarch
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 BuildRequires:  python%{python3_pkgversion}-wheel
 Requires:       python%{python3_pkgversion}-six >= 1.9
+%if %{with python_cpp}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+%else
+BuildArch:      noarch
+%endif
 Conflicts:      %{name}-compiler > %{version}
 Conflicts:      %{name}-compiler < %{version}
 Provides:       %{name}-python3 = %{version}-%{release}
@@ -280,7 +291,7 @@ export PTHREAD_LIBS="-lpthread"
 
 %if %{with python}
 pushd python
-%py3_build
+%py3_build %{?with_python_cpp:-- --cpp_implementation}
 popd
 %endif
 
@@ -308,13 +319,14 @@ fail=1
 
 %install
 %make_install %{?_smp_mflags} STRIPBINARIES=no INSTALL="%{__install} -p" CPPROG="cp -p"
-find %{buildroot} -type f -name "*.la" -exec rm -f {} \;
+find %{buildroot} -type f -name "*.la" -exec rm -f {} +
 
 %if %{with python}
 pushd python
-%py3_install
-find %{buildroot}%{python3_sitelib} -name \*.py |
-  xargs sed -i -e '1{\@^#!@d}'
+%py3_install %{?with_python_cpp:-- --cpp_implementation}
+%if %{without python_cpp}
+find %{buildroot}%{python3_sitelib} -name \*.py -exec sed -i -e '1{\@^#!@d}' {} +
+%endif
 popd
 %endif
 install -p -m 644 -D %{SOURCE1} %{buildroot}%{_datadir}/vim/vimfiles/ftdetect/proto.vim
@@ -373,10 +385,17 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 %if %{with python}
 %files -n python%{python3_pkgversion}-protobuf
+%if %{with python_cpp}
+%dir %{python3_sitearch}/google
+%{python3_sitearch}/google/protobuf/
+%{python3_sitearch}/protobuf-%{version}%{?rcver}-py3.*.egg-info/
+%{python3_sitearch}/protobuf-%{version}%{?rcver}-py3.*-nspkg.pth
+%else
 %dir %{python3_sitelib}/google
 %{python3_sitelib}/google/protobuf/
 %{python3_sitelib}/protobuf-%{version}%{?rcver}-py3.*.egg-info/
 %{python3_sitelib}/protobuf-%{version}%{?rcver}-py3.*-nspkg.pth
+%endif
 %doc python/README.md
 %doc examples/add_person.py examples/list_people.py examples/addressbook.proto
 %endif
@@ -408,6 +427,9 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Sun Aug 14 2022 Orion Poplawski <orion@nwra.com> - 3.19.4-6
+- Build python support with C++ (bz#2107921)
+
 * Fri Jul 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 3.19.4-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
 
