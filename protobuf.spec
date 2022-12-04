@@ -47,7 +47,7 @@ Release:        7%{?dist}
 #   conformance/third_party/jsoncpp/jsoncpp.cpp
 License:        BSD-3-Clause
 URL:            https://github.com/protocolbuffers/protobuf
-Source:         https://github.com/protocolbuffers/protobuf/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}-all.tar.gz
+Source0:        %{url}/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}-all.tar.gz
 
 Source1:        ftdetect-proto.vim
 Source2:        protobuf-init.el
@@ -483,6 +483,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 - Update License to SPDX
 - Improved handling of gtest sources
 - Update/correct gtest commit hash to match upstream
+- Simplify the Source0 URL with a macro
 
 * Sun Aug 14 2022 Orion Poplawski <orion@nwra.com> - 3.19.4-6
 - Build python support with C++ (bz#2107921)
