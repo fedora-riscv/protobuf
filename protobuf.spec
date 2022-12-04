@@ -60,7 +60,7 @@ Source2:        protobuf-init.el
 # https://github.com/protocolbuffers/protobuf/tree/v%%{version}/third_party to
 # check the correct commit hash.
 %global gtest_url https://github.com/google/googletest
-%global gtest_commit 0e402173c97aea7a00749e825b194bfede4f2e45
+%global gtest_commit 5ec7f0c4a113e2f18ac2c6cc7df51ad6afc24081
 %global gtest_dir googletest-%{gtest_commit}
 # For tests (using exactly the same version as the release)
 Source3:        %{gtest_url}/archive/%{gtest_commit}/%{gtest_dir}.tar.gz
@@ -482,6 +482,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 * Sun Dec 04 2022 Benjamin A. Beasley <code@musicinmybrain.net> - 3.19.4-7
 - Update License to SPDX
 - Improved handling of gtest sources
+- Update/correct gtest commit hash to match upstream
 
 * Sun Aug 14 2022 Orion Poplawski <orion@nwra.com> - 3.19.4-6
 - Build python support with C++ (bz#2107921)
