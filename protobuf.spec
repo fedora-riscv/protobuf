@@ -19,8 +19,33 @@
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
 Version:        3.19.4
-Release:        6%{?dist}
-License:        BSD
+Release:        7%{?dist}
+
+# The entire source is BSD-3-Clause, except the following files, which belong
+# to the build system; are unpackaged maintainer utility scripts; or are used
+# only for building tests that are not packaged—and so they do not affect the
+# licenses of the binary RPMs:
+#
+# FSFAP:
+#   m4/ax_cxx_compile_stdcxx.m4
+#   m4/ax_prog_cc_for_build.m4
+#   m4/ax_prog_cxx_for_build.m4
+# Apache-2.0:
+#   python/mox.py
+#   python/stubout.py
+#   third_party/googletest/
+#     except the following, which are BSD-3-Clause:
+#       third_party/googletest/googletest/test/gtest_pred_impl_unittest.cc
+#       third_party/googletest/googletest/include/gtest/gtest-param-test.h
+#       third_party/googletest/googletest/include/gtest/gtest-param-test.h.pump
+#       third_party/googletest/googletest/include/gtest/internal/gtest-param-util-generated.h
+#       third_party/googletest/googletest/include/gtest/internal/gtest-param-util-generated.h.pump
+#       third_party/googletest/googletest/include/gtest/internal/gtest-type-util.h
+#       third_party/googletest/googletest/include/gtest/internal/gtest-type-util.h.pump
+# MIT:
+#   conformance/third_party/jsoncpp/json.h
+#   conformance/third_party/jsoncpp/jsoncpp.cpp
+License:        BSD-3-Clause
 URL:            https://github.com/protocolbuffers/protobuf
 Source:         https://github.com/protocolbuffers/protobuf/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}-all.tar.gz
 Source1:        ftdetect-proto.vim
@@ -37,6 +62,16 @@ Patch2:         disable-tests-on-32-bit-systems.patch
 # throws java.lang.ClassFormatError accessible: module java.base does not "opens java.lang" to unnamed module @12d5624a
 #	at com.google.protobuf.ServiceTest.testGetPrototype(ServiceTest.java:107)
 Patch3:         protobuf-3.19.4-jre17-add-opens.patch
+
+# A bundled copy of jsoncpp is included in the conformance tests, but the
+# result is not packaged, so we do not treat it as a formal bundled
+# dependency—thus the virtual Provides below is commented out. The bundling is
+# removed in a later release:
+#   Make jsoncpp a formal dependency
+#   https://github.com/protocolbuffers/protobuf/pull/10739
+# The bundled version number is obtained from JSONCPP_VERSION_STRING in
+# conformance/third_party/jsoncpp/json.h.
+# Provides:       bundled(jsoncpp) = 1.6.5
 
 BuildRequires:  make
 BuildRequires:  autoconf
@@ -427,6 +462,9 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Sun Dec 04 2022 Benjamin A. Beasley <code@musicinmybrain.net> - 3.19.4-7
+- Update License to SPDX
+
 * Sun Aug 14 2022 Orion Poplawski <orion@nwra.com> - 3.19.4-6
 - Build python support with C++ (bz#2107921)
 
