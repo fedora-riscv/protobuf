@@ -48,10 +48,22 @@ Release:        7%{?dist}
 License:        BSD-3-Clause
 URL:            https://github.com/protocolbuffers/protobuf
 Source:         https://github.com/protocolbuffers/protobuf/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}-all.tar.gz
+
 Source1:        ftdetect-proto.vim
 Source2:        protobuf-init.el
+
+# We bundle a copy of the exact version of gtest that is used by upstream in
+# the source RPM rather than using the system copy. This is to be discouraged,
+# but necessary in this case.  It is not treated as a bundled library because
+# it is used only at build time, and contributes nothing to the installed
+# files.  We take measures to verify this in %%check. See
+# https://github.com/protocolbuffers/protobuf/tree/v%%{version}/third_party to
+# check the correct commit hash.
+%global gtest_url https://github.com/google/googletest
+%global gtest_commit 0e402173c97aea7a00749e825b194bfede4f2e45
+%global gtest_dir googletest-%{gtest_commit}
 # For tests (using exactly the same version as the release)
-Source3:        https://github.com/google/googletest/archive/5ec7f0c4a113e2f18ac2c6cc7df51ad6afc24081.zip
+Source3:        %{gtest_url}/archive/%{gtest_commit}/%{gtest_dir}.tar.gz
 
 # https://github.com/protocolbuffers/protobuf/issues/8082
 Patch1:         protobuf-3.14-disable-IoTest.LargeOutput.patch
@@ -275,7 +287,12 @@ descriptions in the Emacs editor.
 %patch2 -p0
 %endif
 %patch3 -p1 -b .jre17
-mv googletest-5ec7f0c4a113e2f18ac2c6cc7df51ad6afc24081/* third_party/googletest/
+
+# Copy in the needed gtest/gmock implementations.
+%setup -q -T -D -b 3 -n %{name}-%{version}%{?rcver}
+rm -rvf 'third_party/googletest'
+mv '../%{gtest_dir}' 'third_party/googletest'
+
 find -name \*.cc -o -name \*.h | xargs chmod -x
 chmod 644 examples/*
 %if %{with java}
@@ -464,6 +481,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %changelog
 * Sun Dec 04 2022 Benjamin A. Beasley <code@musicinmybrain.net> - 3.19.4-7
 - Update License to SPDX
+- Improved handling of gtest sources
 
 * Sun Aug 14 2022 Orion Poplawski <orion@nwra.com> - 3.19.4-6
 - Build python support with C++ (bz#2107921)
