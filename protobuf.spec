@@ -85,13 +85,15 @@ Patch3:         protobuf-3.19.4-jre17-add-opens.patch
 # conformance/third_party/jsoncpp/json.h.
 # Provides:       bundled(jsoncpp) = 1.6.5
 
-BuildRequires:  make
 BuildRequires:  autoconf
 BuildRequires:  automake
-BuildRequires:  emacs
-BuildRequires:  gcc-c++
 BuildRequires:  libtool
+
 BuildRequires:  pkgconfig
+BuildRequires:  make
+BuildRequires:  gcc-c++
+
+BuildRequires:  emacs
 BuildRequires:  zlib-devel
 
 %ifnarch %{java_arches}
