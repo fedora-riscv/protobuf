@@ -179,11 +179,11 @@ which only depends libprotobuf-lite, which is much smaller than libprotobuf but
 lacks descriptors, reflection, and some other features.
 
 %if %{with python}
-%package -n python%{python3_pkgversion}-%{name}
+%package -n python3-%{name}
 Summary:        Python 3 bindings for Google Protocol Buffers
-BuildRequires:  python%{python3_pkgversion}-devel
-BuildRequires:  python%{python3_pkgversion}-setuptools
-BuildRequires:  python%{python3_pkgversion}-wheel
+BuildRequires:  python3-devel
+BuildRequires:  python3dist(setuptools)
+BuildRequires:  python3dist(wheel)
 %if %{with python_cpp}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 %else
@@ -193,7 +193,7 @@ Conflicts:      %{name}-compiler > %{version}
 Conflicts:      %{name}-compiler < %{version}
 Provides:       %{name}-python3 = %{version}-%{release}
 
-%description -n python%{python3_pkgversion}-%{name}
+%description -n python3-%{name}
 This package contains Python 3 libraries for Google Protocol Buffers
 %endif
 
@@ -436,7 +436,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %{_libdir}/libprotobuf-lite.a
 
 %if %{with python}
-%files -n python%{python3_pkgversion}-protobuf
+%files -n python3-protobuf
 %if %{with python_cpp}
 %dir %{python3_sitearch}/google
 %{python3_sitearch}/google/protobuf/
@@ -486,6 +486,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 - Simplify the Source0 URL with a macro
 - Drop manual dependency on python3-six, no longer needed
 - Drop obsolete python_provide macro
+- Drop python3_pkgversion macro
 
 * Sun Aug 14 2022 Orion Poplawski <orion@nwra.com> - 3.19.4-6
 - Build python support with C++ (bz#2107921)
