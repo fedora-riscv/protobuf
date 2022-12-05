@@ -396,10 +396,6 @@ install -p -m 0644 editors/protobuf-mode.elc %{buildroot}%{_emacs_sitelispdir}/%
 mkdir -p %{buildroot}%{_emacs_sitestartdir}
 install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
-%ldconfig_scriptlets
-%ldconfig_scriptlets lite
-%ldconfig_scriptlets compiler
-
 %files
 %doc CHANGES.txt CONTRIBUTORS.txt README.md
 %license LICENSE
@@ -497,6 +493,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 - Update summary and description to refer to “Python” instead of “Python 3”
 - Re-enable compiled Python extension on Python 3.11
 - Ensure all subpackages always have LICENSE, or depend on something that does
+- Remove obsolete ldconfig_scriptlets macros
 
 * Sun Aug 14 2022 Orion Poplawski <orion@nwra.com> - 3.19.4-6
 - Build python support with C++ (bz#2107921)
