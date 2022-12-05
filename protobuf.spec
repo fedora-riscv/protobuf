@@ -420,6 +420,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %doc examples/add_person.cc examples/addressbook.proto examples/list_people.cc examples/Makefile examples/README.md
 
 %files emacs
+%license LICENSE
 %{_emacs_sitelispdir}/%{name}/
 %{_emacs_sitestartdir}/protobuf-init.el
 
@@ -428,6 +429,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %{_libdir}/libprotoc.a
 
 %files lite
+%license LICENSE
 %{_libdir}/libprotobuf-lite.so.30*
 
 %files lite-devel
@@ -445,6 +447,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %{python3_sitearch}/protobuf-%{version}%{?rcver}-py3.*.egg-info/
 %{python3_sitearch}/protobuf-%{version}%{?rcver}-py3.*-nspkg.pth
 %else
+%license LICENSE
 %dir %{python3_sitelib}/google
 %{python3_sitelib}/google/protobuf/
 %{python3_sitelib}/protobuf-%{version}%{?rcver}-py3.*.egg-info/
@@ -455,6 +458,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %endif
 
 %files vim
+%license LICENSE
 %{_datadir}/vim/vimfiles/ftdetect/proto.vim
 %{_datadir}/vim/vimfiles/syntax/proto.vim
 
@@ -465,6 +469,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %license LICENSE
 
 %files java-util -f .mfiles-protobuf-java-util
+%license LICENSE
 
 %files javadoc -f .mfiles-javadoc
 %license LICENSE
@@ -491,6 +496,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 - Drop python3_pkgversion macro
 - Update summary and description to refer to “Python” instead of “Python 3”
 - Re-enable compiled Python extension on Python 3.11
+- Ensure all subpackages always have LICENSE, or depend on something that does
 
 * Sun Aug 14 2022 Orion Poplawski <orion@nwra.com> - 3.19.4-6
 - Build python support with C++ (bz#2107921)
