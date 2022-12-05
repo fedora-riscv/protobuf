@@ -192,7 +192,6 @@ BuildArch:      noarch
 Conflicts:      %{name}-compiler > %{version}
 Conflicts:      %{name}-compiler < %{version}
 Provides:       %{name}-python3 = %{version}-%{release}
-%{?python_provide:%python_provide python%{python3_pkgversion}-%{name}}
 
 %description -n python%{python3_pkgversion}-%{name}
 This package contains Python 3 libraries for Google Protocol Buffers
@@ -486,6 +485,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 - Update/correct gtest commit hash to match upstream
 - Simplify the Source0 URL with a macro
 - Drop manual dependency on python3-six, no longer needed
+- Drop obsolete python_provide macro
 
 * Sun Aug 14 2022 Orion Poplawski <orion@nwra.com> - 3.19.4-6
 - Build python support with C++ (bz#2107921)
