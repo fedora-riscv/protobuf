@@ -184,7 +184,6 @@ Summary:        Python 3 bindings for Google Protocol Buffers
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 BuildRequires:  python%{python3_pkgversion}-wheel
-Requires:       python%{python3_pkgversion}-six >= 1.9
 %if %{with python_cpp}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 %else
@@ -486,6 +485,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 - Improved handling of gtest sources
 - Update/correct gtest commit hash to match upstream
 - Simplify the Source0 URL with a macro
+- Drop manual dependency on python3-six, no longer needed
 
 * Sun Aug 14 2022 Orion Poplawski <orion@nwra.com> - 3.19.4-6
 - Build python support with C++ (bz#2107921)
