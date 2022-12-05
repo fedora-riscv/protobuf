@@ -180,7 +180,7 @@ lacks descriptors, reflection, and some other features.
 
 %if %{with python}
 %package -n python3-%{name}
-Summary:        Python 3 bindings for Google Protocol Buffers
+Summary:        Python bindings for Google Protocol Buffers
 BuildRequires:  python3-devel
 BuildRequires:  python3dist(setuptools)
 BuildRequires:  python3dist(wheel)
@@ -194,7 +194,7 @@ Conflicts:      %{name}-compiler < %{version}
 Provides:       %{name}-python3 = %{version}-%{release}
 
 %description -n python3-%{name}
-This package contains Python 3 libraries for Google Protocol Buffers
+This package contains Python libraries for Google Protocol Buffers
 %endif
 
 %package vim
@@ -487,6 +487,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 - Drop manual dependency on python3-six, no longer needed
 - Drop obsolete python_provide macro
 - Drop python3_pkgversion macro
+- Update summary and description to refer to “Python” instead of “Python 3”
 
 * Sun Aug 14 2022 Orion Poplawski <orion@nwra.com> - 3.19.4-6
 - Build python support with C++ (bz#2107921)
