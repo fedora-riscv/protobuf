@@ -1,12 +1,8 @@
 # Build -python subpackage
 %bcond_without python
-# Build -python subpackage with C++
-# Not compatible with Python 3.11
-%if 0%{?fedora} >= 37
-%bcond_with python_cpp
-%else
+# Build -python subpackage with C++. This significantly improves performance
+# compared to the pure-Python implementation.
 %bcond_without python_cpp
-%endif
 # Build -java subpackage
 %ifarch %{java_arches}
 %bcond_without java
@@ -74,6 +70,11 @@ Patch2:         disable-tests-on-32-bit-systems.patch
 # throws java.lang.ClassFormatError accessible: module java.base does not "opens java.lang" to unnamed module @12d5624a
 #	at com.google.protobuf.ServiceTest.testGetPrototype(ServiceTest.java:107)
 Patch3:         protobuf-3.19.4-jre17-add-opens.patch
+# Backport upstream commit da973aff2adab60a9e516d3202c111dbdde1a50f:
+#   Fix build with Python 3.11
+#
+#   The PyFrameObject structure members have been removed from the public C API.
+Patch4:         protobuf-3.19.4-python3.11.patch
 
 # A bundled copy of jsoncpp is included in the conformance tests, but the
 # result is not packaged, so we do not treat it as a formal bundled
@@ -287,6 +288,7 @@ descriptions in the Emacs editor.
 %patch2 -p0
 %endif
 %patch3 -p1 -b .jre17
+%patch4 -p1 -b .python311
 
 # Copy in the needed gtest/gmock implementations.
 %setup -q -T -D -b 3 -n %{name}-%{version}%{?rcver}
@@ -488,6 +490,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 - Drop obsolete python_provide macro
 - Drop python3_pkgversion macro
 - Update summary and description to refer to “Python” instead of “Python 3”
+- Re-enable compiled Python extension on Python 3.11
 
 * Sun Aug 14 2022 Orion Poplawski <orion@nwra.com> - 3.19.4-6
 - Build python support with C++ (bz#2107921)
