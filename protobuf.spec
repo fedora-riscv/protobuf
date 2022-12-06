@@ -201,7 +201,10 @@ This package contains Python libraries for Google Protocol Buffers
 %package vim
 Summary:        Vim syntax highlighting for Google Protocol Buffers descriptions
 BuildArch:      noarch
-Requires:       vim-enhanced
+# We don’t really need vim or vim-enhanced to be already installed in order to
+# install a plugin for it. We do need to depend on vim-filesystem, which
+# provides the necessary directory structure.
+Requires:       vim-filesystem
 
 %description vim
 This package contains syntax highlighting for Google Protocol Buffers
@@ -494,6 +497,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 - Re-enable compiled Python extension on Python 3.11
 - Ensure all subpackages always have LICENSE, or depend on something that does
 - Remove obsolete ldconfig_scriptlets macros
+- The -vim subpackage now depends on vim-filesystem, no longer on vim-enhanced
 
 * Sun Aug 14 2022 Orion Poplawski <orion@nwra.com> - 3.19.4-6
 - Build python support with C++ (bz#2107921)
