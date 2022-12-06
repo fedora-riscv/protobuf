@@ -61,6 +61,10 @@ Source2:        protobuf-init.el
 # For tests (using exactly the same version as the release)
 Source3:        %{gtest_url}/archive/%{gtest_commit}/%{gtest_dir}.tar.gz
 
+# Man page hand-written for Fedora in groff_man(7) format based on “protoc
+# --help” output.
+Source4:        protoc.1
+
 # https://github.com/protocolbuffers/protobuf/issues/8082
 Patch1:         protobuf-3.14-disable-IoTest.LargeOutput.patch
 # Disable tests that are failing on 32bit systems
@@ -378,6 +382,9 @@ fail=1
 %make_install %{?_smp_mflags} STRIPBINARIES=no INSTALL="%{__install} -p" CPPROG="cp -p"
 find %{buildroot} -type f -name "*.la" -exec rm -f {} +
 
+# protoc.1 man page
+install -p -m 0644 -D -t '%{buildroot}%{_mandir}/man1' '%{SOURCE4}'
+
 %if %{with python}
 pushd python
 %py3_install %{?with_python_cpp:-- --cpp_implementation}
@@ -408,6 +415,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %doc README.md
 %license LICENSE
 %{_bindir}/protoc
+%{_mandir}/man1/protoc.1*
 %{_libdir}/libprotoc.so.30*
 
 %files devel
@@ -498,6 +506,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 - Ensure all subpackages always have LICENSE, or depend on something that does
 - Remove obsolete ldconfig_scriptlets macros
 - The -vim subpackage now depends on vim-filesystem, no longer on vim-enhanced
+- Add a man page for protoc
 
 * Sun Aug 14 2022 Orion Poplawski <orion@nwra.com> - 3.19.4-6
 - Build python support with C++ (bz#2107921)
