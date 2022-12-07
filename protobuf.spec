@@ -15,6 +15,7 @@
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
 Version:        3.19.4
+%global so_version 30
 Release:        7%{?dist}
 
 # The entire source is BSD-3-Clause, except the following files, which belong
@@ -409,14 +410,14 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %files
 %doc CHANGES.txt CONTRIBUTORS.txt README.md
 %license LICENSE
-%{_libdir}/libprotobuf.so.30*
+%{_libdir}/libprotobuf.so.%{so_version}{,.*}
 
 %files compiler
 %doc README.md
 %license LICENSE
 %{_bindir}/protoc
 %{_mandir}/man1/protoc.1*
-%{_libdir}/libprotoc.so.30*
+%{_libdir}/libprotoc.so.%{so_version}{,.*}
 
 %files devel
 %dir %{_includedir}/google
@@ -437,7 +438,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 %files lite
 %license LICENSE
-%{_libdir}/libprotobuf-lite.so.30*
+%{_libdir}/libprotobuf-lite.so.%{so_version}{,.*}
 
 %files lite-devel
 %{_libdir}/libprotobuf-lite.so
@@ -507,6 +508,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 - Remove obsolete ldconfig_scriptlets macros
 - The -vim subpackage now depends on vim-filesystem, no longer on vim-enhanced
 - Add a man page for protoc
+- Use a macro to avoid repeating the .so version, and improve .so globs
 
 * Sun Aug 14 2022 Orion Poplawski <orion@nwra.com> - 3.19.4-6
 - Build python support with C++ (bz#2107921)
