@@ -14,9 +14,9 @@
 
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
-Version:        3.19.4
+Version:        3.19.5
 %global so_version 30
-Release:        7%{?dist}
+Release:        1%{?dist}
 
 # The entire source is BSD-3-Clause, except the following files, which belong
 # to the build system; are unpackaged maintainer utility scripts; or are used
@@ -494,6 +494,9 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Wed Dec 07 2022 Benjamin A. Beasley <code@musicinmybrain.net> - 3.19.5-1
+- Update to 3.19.5; fix CVE-2022-1941
+
 * Sun Dec 04 2022 Benjamin A. Beasley <code@musicinmybrain.net> - 3.19.4-7
 - Update License to SPDX
 - Improved handling of gtest sources
