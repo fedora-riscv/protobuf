@@ -14,7 +14,7 @@
 
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
-Version:        3.19.5
+Version:        3.19.6
 %global so_version 30
 Release:        1%{?dist}
 
@@ -494,6 +494,9 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Wed Dec 07 2022 Benjamin A. Beasley <code@musicinmybrain.net> - 3.19.6-1
+- Update to 3.19.6; fix CVE-2022-3171
+
 * Wed Dec 07 2022 Benjamin A. Beasley <code@musicinmybrain.net> - 3.19.5-1
 - Update to 3.19.5; fix CVE-2022-1941
 
