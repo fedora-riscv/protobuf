@@ -3,9 +3,16 @@
 # Build -python subpackage with C++. This significantly improves performance
 # compared to the pure-Python implementation.
 %bcond_without python_cpp
+
+# Building Java denpendency jansi failed on riscv64,
+# Skip Java supuport at present
+%ifnarch riscv64
 # Build -java subpackage
 %ifarch %{java_arches}
 %bcond_without java
+%else
+%bcond_with java
+%endif
 %else
 %bcond_with java
 %endif
@@ -19,7 +26,7 @@ Name:           protobuf
 # “patch” updates of protobuf.
 Version:        3.19.6
 %global so_version 30
-Release:        2%{?dist}
+Release:        2.rv64%{?dist}
 
 # The entire source is BSD-3-Clause, except the following files, which belong
 # to the build system; are unpackaged maintainer utility scripts; or are used
@@ -497,6 +504,9 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Fri Apr 14 2023 Liu Yang <Yang.Liu.sn@gmail.com> - 3.19.6-2.rv64
+- Due to jansi failure, skip java support at present on riscv64.
+
 * Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 3.19.6-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
 
