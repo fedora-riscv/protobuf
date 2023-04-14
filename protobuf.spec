@@ -3,9 +3,16 @@
 # Build -python subpackage with C++. This significantly improves performance
 # compared to the pure-Python implementation.
 %bcond_without python_cpp
+
+# Building Java denpendency jansi failed on riscv64,
+# Skip Java supuport at present
+%ifnarch riscv64
 # Build -java subpackage
 %ifarch %{java_arches}
 %bcond_without java
+%else
+%bcond_with java
+%endif
 %else
 %bcond_with java
 %endif
@@ -16,7 +23,7 @@ Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
 Version:        3.19.6
 %global so_version 30
-Release:        1%{?dist}
+Release:        1.rv64%{?dist}
 
 # The entire source is BSD-3-Clause, except the following files, which belong
 # to the build system; are unpackaged maintainer utility scripts; or are used
@@ -494,6 +501,9 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Fri Apr 14 2023 Liu Yang <Yang.Liu.sn@gmail.com> - 3.19.6-1.rv64
+- Due to jansi failure, skip java support at present on riscv64.
+
 * Wed Dec 07 2022 Benjamin A. Beasley <code@musicinmybrain.net> - 3.19.6-1
 - Update to 3.19.6; fix CVE-2022-3171
 
