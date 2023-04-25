@@ -19,7 +19,7 @@ Name:           protobuf
 # “patch” updates of protobuf.
 Version:        3.19.6
 %global so_version 30
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 # The entire source is BSD-3-Clause, except the following files, which belong
 # to the build system; are unpackaged maintainer utility scripts; or are used
@@ -98,7 +98,6 @@ BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  libtool
 
-BuildRequires:  pkgconfig
 BuildRequires:  make
 BuildRequires:  gcc-c++
 
@@ -139,7 +138,6 @@ Summary:        Protocol Buffers C++ headers and libraries
 Requires:       %{name} = %{version}-%{release}
 Requires:       %{name}-compiler = %{version}-%{release}
 Requires:       zlib-devel
-Requires:       pkgconfig
 
 %description devel
 This package contains Protocol Buffers compiler for all languages and
@@ -497,6 +495,10 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 
 
 %changelog
+* Tue Apr 25 2023 Benjamin A. Beasley <code@musicinmybrain.net> - 3.19.6-3
+- Remove unnecessary explicit pkgconfig dependencies
+- Remove an obsolete workaround for failing Java tests
+
 * Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 3.19.6-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
 
