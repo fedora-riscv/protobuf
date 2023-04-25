@@ -289,7 +289,7 @@ descriptions in the Emacs editor.
 
 %prep
 %setup -q -n %{name}-%{version}%{?rcver} -a 3
-%ifarch %{ix86} armv7hl
+%ifarch %{ix86}
 # IoTest.LargeOutput fails on 32bit arches
 # https://github.com/protocolbuffers/protobuf/issues/8082
 %patch1 -p1
@@ -328,7 +328,7 @@ find -name '*.java' | xargs sed -ri \
 
 # This test is incredibly slow on arm
 # https://github.com/google/protobuf/issues/2389
-%ifarch %{arm} s390x
+%ifarch s390x
 mv java/core/src/test/java/com/google/protobuf/IsValidUtf8Test.java \
    java/core/src/test/java/com/google/protobuf/IsValidUtf8Test.java.slow
 mv java/core/src/test/java/com/google/protobuf/DecodeUtf8Test.java \
@@ -359,7 +359,7 @@ popd
 %endif
 
 %if %{with java}
-%ifarch %ix86 s390x %{arm}
+%ifarch %{ix86} s390x
 export MAVEN_OPTS=-Xmx1024m
 %endif
 %pom_disable_module kotlin java/pom.xml
@@ -371,13 +371,7 @@ export MAVEN_OPTS=-Xmx1024m
 
 
 %check
-# Java tests fail on s390x
-%ifarch s390x
-fail=0
-%else
-fail=1
-%endif
-%make_build check CXXFLAGS="%{build_cxxflags} -Wno-error=type-limits" || exit $fail
+%make_build check CXXFLAGS="%{build_cxxflags} -Wno-error=type-limits"
 
 
 %install
@@ -498,6 +492,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 * Tue Apr 25 2023 Benjamin A. Beasley <code@musicinmybrain.net> - 3.19.6-3
 - Remove unnecessary explicit pkgconfig dependencies
 - Remove an obsolete workaround for failing Java tests
+- Remove conditionals for retired 32-bit ARM architecture
 
 * Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 3.19.6-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
