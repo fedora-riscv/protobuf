@@ -277,12 +277,12 @@ descriptions in the Emacs editor.
 %ifarch %{ix86}
 # IoTest.LargeOutput fails on 32bit arches
 # https://github.com/protocolbuffers/protobuf/issues/8082
-%patch1 -p1
+%patch 1 -p1
 # Need to disable more tests that fail on 32bit arches only
-%patch2 -p0
+%patch 2 -p0
 %endif
-%patch3 -p1 -b .jre17
-%patch4 -p1 -b .python311
+%patch 3 -p1 -b .jre17
+%patch 4 -p1 -b .python311
 
 # Copy in the needed gtest/gmock implementations.
 %setup -q -T -D -b 3 -n protobuf-%{version}%{?rcver}
@@ -460,6 +460,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 %changelog
 * Wed Apr 26 2023 Benjamin A. Beasley <code@musicinmybrain.net> - 3.19.6-4
 - Stop packaging static libraries
+- Stop using deprecated %%patchN syntax
 
 * Tue Apr 25 2023 Benjamin A. Beasley <code@musicinmybrain.net> - 3.19.6-3
 - Remove unnecessary explicit pkgconfig dependencies
