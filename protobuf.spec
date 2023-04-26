@@ -325,15 +325,6 @@ find -name '*.java' | xargs sed -ri \
 
 # Backward compatibility symlink
 %mvn_file :protobuf-java:jar: %{name}/%{name}-java %{name}
-
-# This test is incredibly slow on arm
-# https://github.com/google/protobuf/issues/2389
-%ifarch s390x
-mv java/core/src/test/java/com/google/protobuf/IsValidUtf8Test.java \
-   java/core/src/test/java/com/google/protobuf/IsValidUtf8Test.java.slow
-mv java/core/src/test/java/com/google/protobuf/DecodeUtf8Test.java \
-   java/core/src/test/java/com/google/protobuf/DecodeUtf8Test.java.slow
-%endif
 %endif
 
 rm -f src/solaris/libstdc++.la
@@ -493,6 +484,7 @@ install -p -m 0644 %{SOURCE2} %{buildroot}%{_emacs_sitestartdir}
 - Remove unnecessary explicit pkgconfig dependencies
 - Remove an obsolete workaround for failing Java tests
 - Remove conditionals for retired 32-bit ARM architecture
+- Remove a slow-test workaround on s390x
 
 * Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 3.19.6-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
